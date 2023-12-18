@@ -41,6 +41,7 @@ exports.getProduct = asyncHandler(async (req, res, next) => {
 //@access   Public
 exports.createProduct = asyncHandler(async (req, res, next) => {
   //Code to create product
+	const images = req.files.map(file => ({ data: file.buffer, contentType: file.mimetype }));
   const {
     product_name,
     description,
@@ -51,8 +52,7 @@ exports.createProduct = asyncHandler(async (req, res, next) => {
     size,
     category,
     quantity,
-    sku,
-    images,
+    sku
   } = req.body;
 
   if (!category) {

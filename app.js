@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
+const bodyParser = require('body-parser');
 const errorHandler = require("./errors/api-error-handler");
 
 // Initializing environment vairables
@@ -9,7 +10,10 @@ require("dotenv").config();
 
 const app = express();
 
-//Body parser
+// Body parser middleware
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
 // Use of cors
 const corsOptions = {
   origin: true,
