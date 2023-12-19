@@ -38,14 +38,14 @@ router
   .post(
     protect,
     authorization("admin"),
-    upload.array("images", 5),
+    upload.array("images", 4),
     createProduct
   );
 
 router.route("/search").get(
   advanceResults(Product, {
-    path: "recipe",
-    select: "title description servings",
+    path: "product",
+    select: "product_name description crossed_price",
   }),
   searchProduct
 );

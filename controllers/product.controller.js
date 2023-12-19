@@ -1,5 +1,7 @@
 // sendResponse helper function
 const { sendResponse } = require("../helpers/response");
+const crypto = require("crypto");
+const sharp = require("sharp");
 
 // asyncHandler import
 const asyncHandler = require("../helpers/asyncHandler");
@@ -41,7 +43,6 @@ exports.getProduct = asyncHandler(async (req, res, next) => {
 //@access   Public
 exports.createProduct = asyncHandler(async (req, res, next) => {
   //Code to create product
-	const images = req.files.map(file => ({ data: file.buffer, contentType: file.mimetype }));
   const {
     product_name,
     description,
@@ -52,12 +53,65 @@ exports.createProduct = asyncHandler(async (req, res, next) => {
     size,
     category,
     quantity,
-    sku
+    sku,
   } = req.body;
 
   if (!category) {
     return next(ApiError.notfound(`Category is required!`));
   }
+
+  console.log(req.files);
+
+  req.files.map(file => {
+    if (
+      file.mimetype !== "image/png" &&
+      file.mimetype !== "image/jpeg" &&
+      file.mimetype !== "image/jpg" &&
+      file.mimetype !== "image/webp"
+    ) {
+      return next(
+        ApiError.notfound(`Only png, jpeg, jpg, webp images are allowed.`)
+      );
+    }
+  });
+
+  // Assuming req.files is an array of uploaded files
+  const images = await Promise.all(
+    req.files.map(async file => {
+      // Generate a unique hash for the image content
+      const hash = crypto.createHash("md5").update(file.buffer).digest("hex");
+
+      // Compress file.buffer using sharp
+      const compressedImageBuffer = await new Promise((myResolve, myReject) => {
+        if (
+          file.mimetype === "image/png" ||
+          file.mimetype === "image/jpeg" ||
+          file.mimetype === "image/jpg"
+        ) {
+          sharp(file.buffer)
+            .resize(800, 800, { fit: "inside", withoutEnlargement: true })
+            .jpeg({ quality: 80 })
+            .toBuffer()
+            .then(data => myResolve(data))
+            .catch(err => myReject(err));
+        } else if (file.mimetype === "image/webp") {
+          sharp(file.buffer)
+            .toBuffer()
+            .then(data => myResolve(data))
+            .catch(err => myReject(err));
+        }
+      });
+
+      // Create an object with data, content type, and unique identifier
+      return {
+        id: hash,
+        contentType: compressedImageBuffer.mimetype,
+        fileName: file.originalname,
+        fileSize: Buffer.byteLength(compressedImageBuffer),
+        data: compressedImageBuffer,
+      };
+    })
+  );
 
   const product = await Product.create({
     product_name,
@@ -119,13 +173,15 @@ exports.deleteProduct = asyncHandler(async (req, res, next) => {
 });
 
 //@des      Search Product using regex
-//@route    Get /api/v1/recipe/search/?name=
+//@route    Get /api/v1/product/search/?name=
 //@access   Private: [admin, owner]
 exports.searchProduct = asyncHandler(async (req, res, next) => {
-  const searchField = req.query.name;
+  const nameSearchField = req.query.name;
+	const descSearchField = req.query.desc;
 
   const product = await Product.find({
-    name: { $regex: searchField, $options: "$i" },
+    product_name: new RegExp(nameSearchField.trim(), "i"),
+		description: new RegExp(descSearchField.trim(), "i"),
   });
 
   if (!product) {
@@ -138,6 +194,7 @@ exports.searchProduct = asyncHandler(async (req, res, next) => {
     res,
     {
       status: "Sucess",
+      count: product.length > 0 ? product.length : 0,
       data: product,
       message: "Search sucess.",
     },
