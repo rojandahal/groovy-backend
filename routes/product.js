@@ -10,6 +10,13 @@ const {
   updateProduct,
 } = require("../controllers/product.controller");
 
+// Multer import
+const multer = require("multer");
+
+// Set up multer for file uploads
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+
 // Express router
 const router = express.Router();
 
@@ -28,12 +35,17 @@ router
     }),
     getAllProducts
   )
-  .post(protect, authorization("admin"), createProduct);
+  .post(
+    protect,
+    authorization("admin"),
+    upload.array("images", 4),
+    createProduct
+  );
 
 router.route("/search").get(
   advanceResults(Product, {
-    path: "recipe",
-    select: "title description servings",
+    path: "product",
+    select: "product_name description crossed_price",
   }),
   searchProduct
 );

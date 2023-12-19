@@ -34,18 +34,22 @@ const productSchema = new Schema({
   category: {
     type: mongoose.Schema.ObjectId,
     ref: "categories",
-		required: true,
+    required: true,
   },
-	quantity: {
-		type: Number,
-	},
-	sku: {
-		type: String,
-	},
-	images: {
-		type: Array,
-		default: []
-	},
+  quantity: {
+    type: Number,
+  },
+  sku: {
+    type: String,
+  },
+  images: {
+    id: String,
+    filename: String,
+    contentType: String,
+    fileSize: Number,
+    type: Array,
+    data: Buffer,
+  },
   createdAt: {
     type: Date,
     default: Date.now,
