@@ -40,7 +40,7 @@ exports.getProduct = asyncHandler(async (req, res, next) => {
 
 //@des      Create product
 //@route    POST /api/v1/product
-//@access   Public
+//@access   Private: Admin
 exports.createProduct = asyncHandler(async (req, res, next) => {
   //Code to create product
   const {
@@ -141,14 +141,14 @@ exports.createProduct = asyncHandler(async (req, res, next) => {
 
 //@des      Update Product
 //@route    PUT /api/v1/product/:id
-//@access   Public
+//@access   Private: Admin
 exports.updateProduct = asyncHandler(async (req, res, next) => {
   //Code to update product
 });
 
 //@des      Delete Product
 //@route    Delete /api/v1/product/:id
-//@access   Public
+//@access   Private: Admin
 exports.deleteProduct = asyncHandler(async (req, res, next) => {
   let product = await Product.findById(req.params.id);
 
@@ -174,14 +174,14 @@ exports.deleteProduct = asyncHandler(async (req, res, next) => {
 
 //@des      Search Product using regex
 //@route    Get /api/v1/product/search/?name=
-//@access   Private: [admin, owner]
+//@access   Public
 exports.searchProduct = asyncHandler(async (req, res, next) => {
   const nameSearchField = req.query.name;
-	const descSearchField = req.query.desc;
+  const descSearchField = req.query.desc;
 
   const product = await Product.find({
     product_name: new RegExp(nameSearchField.trim(), "i"),
-		description: new RegExp(descSearchField.trim(), "i"),
+    description: new RegExp(descSearchField.trim(), "i"),
   });
 
   if (!product) {

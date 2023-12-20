@@ -34,7 +34,7 @@ const uri = process.env.ATLAS_URI;
 mongoose.connect(uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-	useCreateIndex: true,
+  useCreateIndex: true,
   dbName: process.env.MONGO_DB_NAME,
   user: process.env.MONGO_USER,
   pass: process.env.MONGO_PASSWORD,
@@ -49,11 +49,13 @@ connection.once("open", () => {
 const categoryRoutes = require("./routes/category");
 const productRoutes = require("./routes/product");
 const authRoutes = require("./routes/auth");
+const orderRoutes = require("./routes/order");
 
 //Adding routes middleware
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/category", categoryRoutes);
 app.use("/api/v1/product", productRoutes);
+app.use("/api/v1/order", orderRoutes);
 
 //Error handler
 app.use(errorHandler);

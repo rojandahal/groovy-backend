@@ -17,7 +17,7 @@ exports.getCategory = asyncHandler(async (req, res, next) => {
 
 //@des      Create category
 //@route    POST /api/v1/category
-//@access   Public
+//@access   Private: admin
 
 exports.createCategory = asyncHandler(async (req, res, next) => {
   const { title } = req.body;
