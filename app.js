@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
-const bodyParser = require('body-parser');
+const bodyParser = require("body-parser");
 const errorHandler = require("./errors/api-error-handler");
 
 // Initializing environment vairables
@@ -16,8 +16,12 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // Use of cors
 const corsOptions = {
-  origin: true,
+  origin: "*",
   credentials: true, //access-control-allow-credentials:true
+  allowedHeaders:
+    "Origin, X-Requested-With, Content-Type, Accept, Authorization",
+  accessControlAllowHeaders:
+    "Origin, X-Requested-With, Content-Type, Accept, Authorization",
   optionSuccessStatus: 200,
   headers: "content-type",
   methods: ["GET", "POST", "PUT", "DELETE"],
