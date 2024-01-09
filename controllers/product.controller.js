@@ -60,7 +60,6 @@ exports.createProduct = asyncHandler(async (req, res, next) => {
     return next(ApiError.notfound(`Category is required!`));
   }
 
-  console.log(req.files);
 
   req.files.map(file => {
     if (
@@ -132,7 +131,7 @@ exports.createProduct = asyncHandler(async (req, res, next) => {
     {
       status: "Sucess",
       data: product,
-      message: "Product created sucess.",
+      message: "Product Added Successfully.",
     },
     200,
     "application/json"
@@ -144,6 +143,140 @@ exports.createProduct = asyncHandler(async (req, res, next) => {
 //@access   Private: Admin
 exports.updateProduct = asyncHandler(async (req, res, next) => {
   //Code to update product
+  const {
+    product_name,
+    description,
+    selling_price,
+    crossed_price,
+    cost_per_item,
+    color,
+    size,
+    category,
+    quantity,
+    sku,
+    deleted_images,
+  } = req.body;
+
+  const id = req.params.id;
+  console.log(
+    product_name,
+    description,
+    selling_price,
+    crossed_price,
+    cost_per_item,
+    color,
+    size,
+    category,
+    quantity,
+    sku,
+    deleted_images
+  );
+  if (!id) {
+    return next(ApiError.notfound(`Product id is required!`));
+  }
+
+  if (!category) {
+    return next(ApiError.notfound(`Category is required!`));
+  }
+
+  if (deleted_images && deleted_images.length > 0) {
+    deleted_images.map(async id => {
+      await Product.updateOne({ _id: id }, { $pull: { images: { id: id } } });
+    });
+  }
+
+  // Assuming req.files is an array of uploaded files
+  if (req.files && req.files.length > 0) {
+    req.files.map(file => {
+      if (
+        file.mimetype !== "image/png" &&
+        file.mimetype !== "image/jpeg" &&
+        file.mimetype !== "image/jpg" &&
+        file.mimetype !== "image/webp"
+      ) {
+        return next(
+          ApiError.notfound(`Only png, jpeg, jpg, webp images are allowed.`)
+        );
+      }
+    });
+    const imageData = await Promise.all(
+      req.files.map(async file => {
+        // Generate a unique hash for the image content
+        const hash = crypto.createHash("md5").update(file.buffer).digest("hex");
+
+        // Compress file.buffer using sharp
+        const compressedImageBuffer = await new Promise(
+          (myResolve, myReject) => {
+            if (
+              file.mimetype === "image/png" ||
+              file.mimetype === "image/jpeg" ||
+              file.mimetype === "image/jpg"
+            ) {
+              sharp(file.buffer)
+                .resize(800, 800, { fit: "inside", withoutEnlargement: true })
+                .jpeg({ quality: 80 })
+                .toBuffer()
+                .then(data => myResolve(data))
+                .catch(err => myReject(err));
+            } else if (file.mimetype === "image/webp") {
+              sharp(file.buffer)
+                .toBuffer()
+                .then(data => myResolve(data))
+                .catch(err => myReject(err));
+            }
+          }
+        );
+
+        // Create an object with data, content type, and unique identifier
+        return {
+          id: hash,
+          contentType: compressedImageBuffer.mimetype,
+          fileName: file.originalname,
+          fileSize: Buffer.byteLength(compressedImageBuffer),
+          data: compressedImageBuffer,
+        };
+      })
+    );
+
+    await Product.updateOne({ _id: id }, { $push: { images: imageData } });
+  }
+
+  await Product.findByIdAndUpdate(
+    id,
+    {
+      product_name,
+      description,
+      selling_price,
+      crossed_price,
+      cost_per_item,
+      color,
+      size,
+      category,
+      quantity,
+      sku,
+    },
+    { useFindAndModify: false }
+  )
+    .then(async response => {
+      console.log(response);
+      if (!response) {
+        return next(ApiError.notfound(`Product not found!`));
+      }
+      return sendResponse(
+        res,
+        {
+          status: "Sucess",
+          data: response,
+          message: "Update sucess.",
+        },
+        200,
+        "application/json"
+      );
+    })
+    .catch(err => {
+      console.log(err);
+      return next(ApiError.notfound(`Product not found!`));
+    });
 });
 
 //@des      Delete Product

@@ -17,16 +17,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // Use of cors
 const corsOptions = {
   origin: "*",
-  credentials: true, //access-control-allow-credentials:true
-  allowedHeaders:
-    "Origin, X-Requested-With, Content-Type, Accept, Authorization",
-  accessControlAllowHeaders:
-    "Origin, X-Requested-With, Content-Type, Accept, Authorization",
+  credentials: true,
   optionSuccessStatus: 200,
-  headers: "content-type",
-  methods: ["GET", "POST", "PUT", "DELETE"],
 };
-app.options("*", cors(corsOptions));
 app.use(cors(corsOptions));
 app.use(express.json());
 
