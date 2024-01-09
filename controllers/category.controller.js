@@ -4,7 +4,7 @@ const { sendResponse } = require("../helpers/response");
 // asyncHandler import
 const asyncHandler = require("../helpers/asyncHandler");
 
-// Model recipe
+// Model category
 const Category = require("../models/category.model");
 const ApiError = require("../errors/ApiError");
 

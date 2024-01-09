@@ -60,7 +60,6 @@ exports.createProduct = asyncHandler(async (req, res, next) => {
     return next(ApiError.notfound(`Category is required!`));
   }
 
-
   req.files.map(file => {
     if (
       file.mimetype !== "image/png" &&
@@ -158,19 +157,6 @@ exports.updateProduct = asyncHandler(async (req, res, next) => {
   } = req.body;
 
   const id = req.params.id;
-  console.log(
-    product_name,
-    description,
-    selling_price,
-    crossed_price,
-    cost_per_item,
-    color,
-    size,
-    category,
-    quantity,
-    sku,
-    deleted_images
-  );
   if (!id) {
     return next(ApiError.notfound(`Product id is required!`));
   }
@@ -179,10 +165,23 @@ exports.updateProduct = asyncHandler(async (req, res, next) => {
     return next(ApiError.notfound(`Category is required!`));
   }
 
-  if (deleted_images && deleted_images.length > 0) {
-    deleted_images.map(async id => {
-      await Product.updateOne({ _id: id }, { $pull: { images: { id: id } } });
-    });
+  try {
+    if (deleted_images && deleted_images.length > 0) {
+      deleted_images.map(async imageId => {
+        await Product.updateOne(
+          { _id: id },
+          { $pull: { images: { id: imageId } } }
+        );
+      });
+    } else {
+      await Product.updateOne(
+        { _id: id },
+        { $pull: { images: { id: deleted_images } } }
+      );
+    }
+  } catch (error) {
+    console.log(error);
+    return next(ApiError.notfound(`Error deleting images!`));
   }
 
   // Assuming req.files is an array of uploaded files
