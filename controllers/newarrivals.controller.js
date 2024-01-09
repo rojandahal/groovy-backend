@@ -19,30 +19,32 @@ exports.getNewArrivals = asyncHandler(async (req, res, next) => {
 //@route    POST /api/v1/newarrivals
 //@access   Private: admin
 exports.createNewArrivals = asyncHandler(async (req, res, next) => {
-  const { product_id } = req.body;
+  const { id, title } = req.body;
 
-  if (product_id === "") {
+  if (id === "") {
     return next(new ApiError(404, `product_id is required.`));
   }
 
-  // const isExists = await NewArrivals.findOne({
-  //   product_id: new RegExp(product_id.trim(), "i"),
-  // });
+  const isExists = await NewArrivals.findOne({
+    product_id: id,
+  });
 
-  // console.log(isExists)
+  console.log(isExists);
 
-  // if (isExists) {
-  //   return next(new ApiError(404, `NewArrivals already exists.`));
-  // }
+  if (isExists) {
+    return next(new ApiError(404, `NewArrivals already exists.`));
+  }
 
-  const newArrivals = await NewArrivals.create({ product_id });
+  const newArrivals = await NewArrivals.create({ title, product_id: id });
+
+  const msg = title + " added to New Arrivals successfully.";
 
   return sendResponse(
     res,
     {
       status: "Sucess",
       data: newArrivals,
-      message: "New Arrival creation successful.",
+      message: msg,
     },
     200,
     "application/json"
@@ -65,7 +67,7 @@ exports.deleteNewArrivals = asyncHandler(async (req, res, next) => {
     res,
     {
       status: "Sucess",
-      message: "NewArrivals deletion successful.",
+      message: "Deletion Successful.",
     },
     200,
     "application/json"
