@@ -12,8 +12,13 @@ const bannerSchema = new Schema({
     maxlength: 30,
   },
   image: {
+    type: Object,
+    required: true,
+  },
+  type: {
     type: String,
     required: true,
+    enum: ["BANNER_ONE", "BANNER_TWO", "NEW_ARRIVAL"],
   },
   price: {
     type: Number,
