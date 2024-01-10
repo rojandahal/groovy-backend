@@ -29,8 +29,6 @@ exports.createNewArrivals = asyncHandler(async (req, res, next) => {
     product_id: id,
   });
 
-  console.log(isExists);
-
   if (isExists) {
     return next(new ApiError(404, `NewArrivals already exists.`));
   }
@@ -55,7 +53,6 @@ exports.createNewArrivals = asyncHandler(async (req, res, next) => {
 //@route    Delete /api/v1/newarrivals/:id
 //@access   Private: admin
 exports.deleteNewArrivals = asyncHandler(async (req, res, next) => {
-  const { product_id } = req.body;
 
   const newArrivals = await NewArrivals.findByIdAndDelete(req.params.id);
 

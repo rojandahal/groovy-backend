@@ -48,6 +48,7 @@ const productRoutes = require("./routes/product");
 const authRoutes = require("./routes/auth");
 const orderRoutes = require("./routes/order");
 const newArrivals = require("./routes/newarrivals");
+const bannerRoutes = require("./routes/banner");
 
 //Adding routes middleware
 app.use("/api/v1/auth", authRoutes);
@@ -55,6 +56,7 @@ app.use("/api/v1/category", categoryRoutes);
 app.use("/api/v1/product", productRoutes);
 app.use("/api/v1/order", orderRoutes);
 app.use("/api/v1/newarrivals", newArrivals);
+app.use("/api/v1/banner", bannerRoutes);
 
 //Error handler
 app.use(errorHandler);
