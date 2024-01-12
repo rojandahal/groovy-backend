@@ -15,7 +15,7 @@ const { protect, authorization } = require("../middlewares/auth");
 
 router
   .route("/")
-  .get(protect, authorization("admin"), advanceResults(Category), getCategory)
+  .get(advanceResults(Category), getCategory)
   .post(protect, authorization("admin"), createCategory);
 
 router.route("/:id").delete(protect, authorization("admin"), deleteCategory);

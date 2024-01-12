@@ -7,12 +7,33 @@ const asyncHandler = require("../helpers/asyncHandler");
 // Model newArrivals
 const NewArrivals = require("../models/newarrivals.model");
 const ApiError = require("../errors/ApiError");
+const Product = require("../models/product.model");
 
 //@des      Get all newArrivals
 //@route    GET /api/v1/newarrivals
 //@access   Public
 exports.getNewArrivals = asyncHandler(async (req, res, next) => {
-  return sendResponse(res, res.advanceResults, 200, "application/json");
+  const newArrivalsId = await NewArrivals.find();
+
+  let newArrivals = [];
+
+  const promises = newArrivalsId.map(async item => {
+    const data = await Product.findById(item.product_id);
+    newArrivals.push(data);
+  });
+
+  await Promise.all(promises);
+
+  return sendResponse(
+    res,
+    {
+      status: "Sucess",
+      data: newArrivalsId,
+      arrivals: newArrivals,
+    },
+    200,
+    "application/json"
+  );
 });
 
 //@des      Create newArrivals
@@ -53,7 +74,6 @@ exports.createNewArrivals = asyncHandler(async (req, res, next) => {
 //@route    Delete /api/v1/newarrivals/:id
 //@access   Private: admin
 exports.deleteNewArrivals = asyncHandler(async (req, res, next) => {
-
   const newArrivals = await NewArrivals.findByIdAndDelete(req.params.id);
 
   if (!newArrivals) {
