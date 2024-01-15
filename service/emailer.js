@@ -3,7 +3,7 @@ const ejs = require("ejs");
 const path = require("path");
 
 const sendEmail = async options => {
-  console.log(options);
+  // console.log(options);
   // Code to send email
   // Create reusable transporter object using the default SMTP transport
   const transporter = nodemailer.createTransport({

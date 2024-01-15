@@ -5,6 +5,7 @@ const {
   getAllOrders,
   createOrder,
   deleteOrder,
+  updateOrder,
 } = require("../controllers/order.controller");
 
 //Express Router
@@ -28,6 +29,9 @@ router
   )
   .post(createOrder);
 
-router.route("/:id").delete(protect, authorization("admin"), deleteOrder);
+router
+  .route("/:id")
+  .delete(protect, authorization("admin"), deleteOrder)
+  .put(protect, authorization("admin"), updateOrder);
 
 module.exports = router;

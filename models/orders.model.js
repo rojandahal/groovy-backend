@@ -54,7 +54,7 @@ const orderSchema = new Schema({
     required: [true, "Please add a address full"],
   },
   product: {
-    type: Array,
+    type: Object,
     default: [
       {
         product_id: String,
@@ -67,6 +67,10 @@ const orderSchema = new Schema({
     ],
     required: [true, "Please add a product"],
   },
+	order_group: {
+		type: String,
+		required: [true, "Please add a order group"],
+	},
   shipping_cost: {
     type: Number,
     required: [true, "Please add a shipping cost"],
@@ -83,6 +87,11 @@ const orderSchema = new Schema({
     type: String,
     required: [true, "Please add a payment method"],
   },
+  shipping_status: {
+    type: String,
+    default: "open",
+    enum: ["open", "shipped", "delivered"],
+  },
   createdAt: {
     type: Date,
     default: Date.now,
@@ -91,9 +100,7 @@ const orderSchema = new Schema({
 
 // Create bootcamp slug from the name
 orderSchema.pre("save", function (next) {
-	next();
+  next();
 });
 
 module.exports = mongoose.model("orders", orderSchema);
-
-
