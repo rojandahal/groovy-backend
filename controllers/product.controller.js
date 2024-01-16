@@ -259,6 +259,17 @@ exports.updateProduct = asyncHandler(async (req, res, next) => {
   )
     .then(async response => {
       console.log(response);
+      //Update new arrivals as well if found
+      const newArrival = await NewArrival.findOne({ product_id: id });
+      if (newArrival) {
+        await NewArrival.updateOne(
+          { product_id: id },
+          {
+            title: product_name,
+          }
+        );
+      }
+
       if (!response) {
         return next(ApiError.notfound(`Product not found!`));
       }
