@@ -78,3 +78,35 @@ exports.deleteCategory = asyncHandler(async (req, res, next) => {
     "application/json"
   );
 });
+
+//@des      Get all product of category
+//@route    GET /api/v1/category/:id/products
+//@access   Public
+
+exports.getProductOfCategory = asyncHandler(async (req, res, next) => {
+  if (req.params.id === "undefined") {
+    return next(new ApiError(404, `Id id required.`));
+  }
+  const category = await Category.findById(req.params.id);
+
+  if (!category) {
+    return next(new ApiError(404, `Category not found.`));
+  }
+
+  const product = await productModel.find({ category: req.params.id });
+
+  if (!product) {
+    return next(new ApiError(404, `Products not found.`));
+  }
+
+  return sendResponse(
+    res,
+    {
+      status: "Sucess",
+      data: product,
+      message: "Products of Category found.",
+    },
+    200,
+    "application/json"
+  );
+});

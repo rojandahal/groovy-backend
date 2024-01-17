@@ -5,6 +5,7 @@ const {
   getCategory,
   createCategory,
   deleteCategory,
+  getProductOfCategory,
 } = require("../controllers/category.controller");
 
 // Express router
@@ -19,5 +20,9 @@ router
   .post(protect, authorization("admin"), createCategory);
 
 router.route("/:id").delete(protect, authorization("admin"), deleteCategory);
+
+router
+  .route("/products/:id")
+  .get(advanceResults(Category), getProductOfCategory);
 
 module.exports = router;
