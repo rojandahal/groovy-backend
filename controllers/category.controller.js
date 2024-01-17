@@ -7,6 +7,7 @@ const asyncHandler = require("../helpers/asyncHandler");
 // Model category
 const Category = require("../models/category.model");
 const ApiError = require("../errors/ApiError");
+const productModel = require("../models/product.model");
 
 //@des      Get all category
 //@route    GET /api/v1/category
@@ -56,12 +57,22 @@ exports.deleteCategory = asyncHandler(async (req, res, next) => {
   if (!category) {
     return next(new ApiError(404, `Category not found.`));
   }
+
+  // Delete all product related to category
+  // Find all products related to category
+
+  const product = await productModel.find({ category: req.params.id });
+
+  if (product) {
+    await productModel.deleteMany({ category: req.params.id });
+  }
+
   return sendResponse(
     res,
     {
       status: "Sucess",
-      data: [],
-      message: "Category deletetion sucess.",
+      data: product,
+      message: "Category deletetion sucess. With all product related to it.",
     },
     200,
     "application/json"
