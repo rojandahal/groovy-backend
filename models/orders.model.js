@@ -22,12 +22,7 @@ const orderSchema = new Schema({
   },
   phone: {
     type: String,
-    validate: {
-      validator: function (v) {
-        return /^\d{10}$/.test(v);
-      },
-      message: props => `${props.value} is not a valid phone number!`,
-    },
+		required: [true, "Please add a phone number"],
   },
   country: {
     type: String,

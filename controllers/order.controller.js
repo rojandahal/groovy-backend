@@ -47,6 +47,25 @@ exports.createOrder = asyncHandler(async (req, res, next) => {
 
   const orderGroup = "order_" + crypto.randomBytes(8).toString("hex");
 
+  console.log({
+    order_group: orderGroup,
+    first_name: first_name,
+    last_name: last_name,
+    email: email,
+    phone: phone,
+    country: country,
+    state: state,
+    city: city,
+    zip_code: zip_code,
+    address: address,
+    address_full: address_full,
+    product: product,
+    shipping_cost: shipping_cost,
+    total_price: total_price,
+    payment_status: payment_status,
+    payment_method: payment_method,
+  });
+
   product.map(async (item, count) => {
     //Append total amount to the productToAdd
     const newOrder = await Order.create({
