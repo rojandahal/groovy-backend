@@ -16,7 +16,12 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // Use of cors
 const corsOptions = {
-  origin: "*",
+  origin: [
+    "http://localhost:3000",
+    "http://localhost:5000",
+    "http://127.0.0.1:3000",
+		"http://192.168.1.74:3000"
+  ],
   credentials: true,
   optionSuccessStatus: 200,
 };
