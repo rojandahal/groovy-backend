@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<style>
+		/* Add your custom styling here */
+		body {
+			font-family: Arial, sans-serif;
+			line-height: 1.6;
+			margin: 20px;
+		}
+
+		h2 {
+			color: #333;
+		}
+
+		table {
+			width: 100%;
+			border-collapse: collapse;
+			margin-top: 20px;
+		}
+
+		table,
+		th,
+		td {
+			border: 1px solid #ddd;
+		}
+
+		th,
+		td {
+			padding: 10px;
+			text-align: left;
+		}
+
+		th {
+			background-color: #f2f2f2;
+		}
+	</style>
+</head>
+
+<body>
+	<h1>Hi <%= user.first_name %>
+			<%= user.last_name %>,
+	</h1>
+	<h2>Your order has been <%=user.shipping_status%>
+	</h2>
+
+	<h2>Product Details</h2>
+	<table>
+		<tr>
+			<th>Name</th>
+			<th>Price</th>
+			<th>Quantity</th>
+			<th>Size</th>
+			<th>Color</th>
+		</tr>
+		<tr>
+			<td>
+				<%= user.product.product_name %>
+			</td>
+			<td>
+				<%= user.product.product_price %>
+			</td>
+			<td>
+				<%= user.product.quantity_count %>
+			</td>
+			<td>
+				<%= user.product.size %>
+			</td>
+			<td>
+				<%= user.product.color %>
+			</td>
+		</tr>
+	</table>
+
+	<p>Your order status has been updated. Thank you for the purchase.</p>
+
+	<p>Best regards,<br>
+		Groovy</p>
+</body>
+
+</html>

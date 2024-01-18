@@ -1,6 +1,7 @@
 const nodemailer = require("nodemailer");
 const ejs = require("ejs");
 const path = require("path");
+const { listeners } = require("../models/orders.model");
 
 const sendEmail = async options => {
   // console.log(options);
@@ -37,10 +38,13 @@ const sendEmail = async options => {
   );
 
   // Determine which template to use based on recipient
-  const templatePath =
-    options.to === "mr.dahalrojan@gmail.com"
-      ? adminTemplatePath
-      : userTemplatePath;
+  let templatePath = options.sendToUser ? userTemplatePath : adminTemplatePath;
+
+	//Send for updating the order status
+  if (options.updateEmail) {
+		console.log("updateEmail")
+    templatePath = path.join("templates", "emails", "update_order.ejs");
+  }
 
   ejs.renderFile(templatePath, { user: options.user }, function (err, data) {
     if (err) {
@@ -65,64 +69,6 @@ const sendEmail = async options => {
         });
     }
   });
-
-  // // Assuming options is an object with properties like user, to, subject
-  // const userTemplatePath = path.join(
-  //   "templates",
-  //   "emails",
-  //   "userorder_user.ejs"
-  // );
-  // const adminTemplatePath = path.join(
-  //   "templates",
-  //   "emails",
-  //   "userorder_admin.ejs"
-  // );
-
-  // // Determine which template to use based on recipient
-  // const templatePath =
-  //   options.to === "mr.dahalrojan@gmail.com"
-  //     ? adminTemplatePath
-  //     : userTemplatePath;
-
-  // // Assuming options is an object with properties like user, to, subject
-  // ejs.renderFile(
-  //   path.join("templates", "emails", "userorder.ejs"),
-  //   { user: options.user },
-  //   function (err, data) {
-  //     if (err) {
-  //       console.log(err);
-  //     } else {
-  //       // Define the email options
-  //       const mailOptions = {
-  //         from: options.from,
-  //         to: options.to,
-  //         subject: options.subject,
-  //         html: data,
-  //       };
-
-  //       // Actually send the email
-  //       transporter
-  //         .sendMail(mailOptions)
-  //         .then(() => {
-  //           // Setup email options to send to ADMIN
-  //           mailOptions.to = "mr.dahalrojan@gmail.com";
-
-  //           transporter.sendMail(mailOptions, function (err, info) {
-  //             if (err) {
-  //               console.log(err);
-  //             } else {
-  //               console.log("Email sent successfully to admin");
-  //             }
-  //           });
-
-  //           console.log("Email sent successfully to user");
-  //         })
-  //         .catch(err => {
-  //           console.log(err);
-  //         });
-  //     }
-  //   }
-  // );
 };
 
 module.exports = sendEmail;

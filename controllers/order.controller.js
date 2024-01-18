@@ -134,12 +134,14 @@ exports.createOrder = asyncHandler(async (req, res, next) => {
     to: email,
     subject: "Order confirmation",
     message: "Your order has been confirmed",
+    sendToUser: true,
     user: user,
   }).then(async res => {
     // Send email to admin;
     sendEmail({
       from: `Groovy <${adminEmail}>`,
       to: adminEmail,
+      sendToUser: false,
       subject: "New order has been placed",
       user: user,
     });
@@ -209,6 +211,15 @@ exports.updateOrder = asyncHandler(async (req, res, next) => {
   if (!order) {
     return next(ApiError.notfound(`Order not found!`));
   }
+
+  sendEmail({
+    from: `Groovy <${process.env.ADMIN_EMAIL}>`,
+    to: order.email,
+		updateEmail: true,
+    subject: "Order status updated",
+    message: "Your order status has been updated",
+    user: order,
+  });
 
   return sendResponse(
     res,
