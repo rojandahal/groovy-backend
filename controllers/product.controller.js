@@ -324,11 +324,9 @@ exports.deleteProduct = asyncHandler(async (req, res, next) => {
 //@access   Public
 exports.searchProduct = asyncHandler(async (req, res, next) => {
   const nameSearchField = req.query.name;
-  const descSearchField = req.query.desc;
 
   const product = await Product.find({
     product_name: new RegExp(nameSearchField.trim(), "i"),
-    description: new RegExp(descSearchField.trim(), "i"),
   });
 
   if (!product) {
