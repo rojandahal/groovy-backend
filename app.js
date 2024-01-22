@@ -24,7 +24,9 @@ const corsOptions = {
     "http://192.168.1.74:3000",
 		"http://murphysdemo.com.au/",
 		"http://groovy.murphysdemo.com.au/",
-		"http://murphysdemo.com.au/groovy"
+		"http://murphysdemo.com.au/groovy",
+		"http://groovy.murphysdemo.com.au",
+		"http://murphysdemo.com.au",
   ],
   credentials: true,
   optionSuccessStatus: 200,
