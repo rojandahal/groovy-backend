@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
-const bodyParser = require('body-parser');
+const bodyParser = require("body-parser");
 const errorHandler = require("./errors/api-error-handler");
 
 // Initializing environment vairables
@@ -16,13 +16,21 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // Use of cors
 const corsOptions = {
-  origin: true,
-  credentials: true, //access-control-allow-credentials:true
+  origin: [
+    "http://localhost:3000",
+    "http://localhost:5000",
+    "http://127.0.0.1:3000",
+    "http://192.168.1.103:3000",
+    "http://192.168.1.74:3000",
+		"http://murphysdemo.com.au/",
+		"http://groovy.murphysdemo.com.au/",
+		"http://murphysdemo.com.au/groovy",
+		"http://groovy.murphysdemo.com.au",
+		"http://murphysdemo.com.au",
+  ],
+  credentials: true,
   optionSuccessStatus: 200,
-  headers: "content-type",
-  methods: ["GET", "POST", "PUT", "DELETE"],
 };
-app.options("*", cors(corsOptions));
 app.use(cors(corsOptions));
 app.use(express.json());
 
@@ -34,7 +42,7 @@ const uri = process.env.ATLAS_URI;
 mongoose.connect(uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-	useCreateIndex: true,
+  useCreateIndex: true,
   dbName: process.env.MONGO_DB_NAME,
   user: process.env.MONGO_USER,
   pass: process.env.MONGO_PASSWORD,
@@ -49,11 +57,17 @@ connection.once("open", () => {
 const categoryRoutes = require("./routes/category");
 const productRoutes = require("./routes/product");
 const authRoutes = require("./routes/auth");
+const orderRoutes = require("./routes/order");
+const newArrivals = require("./routes/newarrivals");
+const bannerRoutes = require("./routes/banner");
 
 //Adding routes middleware
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/category", categoryRoutes);
 app.use("/api/v1/product", productRoutes);
+app.use("/api/v1/order", orderRoutes);
+app.use("/api/v1/newarrivals", newArrivals);
+app.use("/api/v1/banner", bannerRoutes);
 
 //Error handler
 app.use(errorHandler);

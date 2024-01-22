@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+			line-height: 1.6;
+			margin: 20px;
+		}
+
+		h2 {
+			color: #333;
+		}
+
+		table {
+			width: 100%;
+			border-collapse: collapse;
+			margin-top: 20px;
+		}
+
+		table,
+		th,
+		td {
+			border: 1px solid #ddd;
+		}
+
+		th,
+		td {
+			padding: 10px;
+			text-align: left;
+		}
+
+		th {
+			background-color: #f2f2f2;
+		}
+	</style>
+</head>
+
+<body>
+	<p style="color: green;">NEW ORDER HAS BEEN PLACED</p>
+
+	<h2>Order Details for <p style="color: red;">
+			<%= user.first_name %>
+				<%= user.last_name %>
+		</p>
+	</h2>
+
+	<table>
+		<tr>
+			<th>Field</th>
+			<th>Value</th>
+		</tr>
+		<tr>
+			<td>Email</td>
+			<td>
+				<%= user.email %>
+			</td>
+		</tr>
+		<tr>
+			<td>Phone</td>
+			<td>
+				<%= user.phone %>
+			</td>
+		</tr>
+	</table>
+
+	<h2>Product Details</h2>
+	<table>
+		<tr>
+			<th>Name</th>
+			<th>Price</th>
+			<th>Quantity</th>
+			<th>Size</th>
+			<th>Color</th>
+		</tr>
+		<% user.product.forEach(product=> { %>
+			<tr>
+				<td>
+					<%= product.product_name %>
+				</td>
+				<td>
+					<%= product.product_price %>
+				</td>
+				<td>
+					<%= product.quantity_count %>
+				</td>
+				<td>
+					<%= product.size %>
+				</td>
+				<td>
+					<%= product.color %>
+				</td>
+			</tr>
+			<% }); %>
+	</table>
+
+	<h2>Order Summary</h2>
+	<table>
+		<tr>
+			<th>Field</th>
+			<th>Value</th>
+		</tr>
+		<tr>
+			<td>Shipping Cost</td>
+			<td>$<%= user.shipping_cost %>
+			</td>
+		</tr>
+		<tr>
+			<td>Total Price</td>
+			<td>$<%= user.total_price %>
+			</td>
+		</tr>
+		<tr>
+			<td>Payment Status</td>
+			<td>
+				<%= user.payment_status %>
+			</td>
+		</tr>
+		<tr>
+			<td>Payment Method</td>
+			<td>
+				<%= user.payment_method %>
+			</td>
+		</tr>
+	</table>
+
+	<h2>Shipping Address</h2>
+	<table>
+		<tr>
+			<th>Field</th>
+			<th>Value</th>
+		</tr>
+		<tr>
+			<td>Address</td>
+			<td>
+				<%= user.address %>
+			</td>
+		</tr>
+		<tr>
+			<td>Address 2</td>
+			<td>
+				<%= user.address_full %>
+			</td>
+		</tr>
+		<tr>
+			<td>City</td>
+			<td>
+				<%= user.city %>
+			</td>
+		</tr>
+		<tr>
+			<td>State</td>
+			<td>
+				<%= user.state %>
+			</td>
+		</tr>
+		<tr>
+			<td>Zip</td>
+			<td>
+				<%= user.zip_code %>
+			</td>
+		</tr>
+		<tr>
+			<td>Country</td>
+			<td>
+				<%= user.country %>
+			</td>
+		</tr>
+	</table>
+
+	<p>Best regards,<br>
+		Groovy</p>
+</body>
+
+</html>

@@ -4,9 +4,10 @@ const { sendResponse } = require("../helpers/response");
 // asyncHandler import
 const asyncHandler = require("../helpers/asyncHandler");
 
-// Model recipe
+// Model category
 const Category = require("../models/category.model");
 const ApiError = require("../errors/ApiError");
+const productModel = require("../models/product.model");
 
 //@des      Get all category
 //@route    GET /api/v1/category
@@ -17,7 +18,7 @@ exports.getCategory = asyncHandler(async (req, res, next) => {
 
 //@des      Create category
 //@route    POST /api/v1/category
-//@access   Public
+//@access   Private: admin
 
 exports.createCategory = asyncHandler(async (req, res, next) => {
   const { title } = req.body;
@@ -56,12 +57,54 @@ exports.deleteCategory = asyncHandler(async (req, res, next) => {
   if (!category) {
     return next(new ApiError(404, `Category not found.`));
   }
+
+  // Delete all product related to category
+  // Find all products related to category
+
+  const product = await productModel.find({ category: req.params.id });
+
+  if (product) {
+    await productModel.deleteMany({ category: req.params.id });
+  }
+
   return sendResponse(
     res,
     {
       status: "Sucess",
-      data: [],
-      message: "Deletetion sucess.",
+      data: product,
+      message: "Category deletetion sucess. With all product related to it.",
+    },
+    200,
+    "application/json"
+  );
+});
+
+//@des      Get all product of category
+//@route    GET /api/v1/category/:id/products
+//@access   Public
+
+exports.getProductOfCategory = asyncHandler(async (req, res, next) => {
+  if (req.params.id === "undefined") {
+    return next(new ApiError(404, `Id id required.`));
+  }
+  const category = await Category.findById(req.params.id);
+
+  if (!category) {
+    return next(new ApiError(404, `Category not found.`));
+  }
+
+  const product = await productModel.find({ category: req.params.id });
+
+  if (!product) {
+    return next(new ApiError(404, `Products not found.`));
+  }
+
+  return sendResponse(
+    res,
+    {
+      status: "Sucess",
+      data: product,
+      message: "Products of Category found.",
     },
     200,
     "application/json"

@@ -54,6 +54,11 @@ router
   .route("/:id")
   .get(getProduct)
   .delete(protect, authorization("admin"), deleteProduct)
-  .put(protect, authorization("admin"), updateProduct);
+  .put(
+    protect,
+    authorization("admin"),
+    upload.array("images", 4),
+    updateProduct
+  );
 
 module.exports = router;
