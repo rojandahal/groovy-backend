@@ -27,10 +27,7 @@ const corsOptions = {
     'http://murphysdemo.com.au/groovy',
     'http://groovy.murphysdemo.com.au',
     'http://murphysdemo.com.au',
-    'https://groovyhandmade.onrender.com/',
-    'https://render.com/',
-    'http://groovyhandmade.onrender.com/',
-    'http://render.com/',
+    '*', // allow all
   ],
   credentials: true,
   optionSuccessStatus: 200,
